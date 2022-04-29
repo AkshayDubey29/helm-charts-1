@@ -37,15 +37,13 @@ containers:
   {{- end }}
     image: "{{ .Values.image.repository }}:{{ default .Chart.AppVersion .Values.image.tag }}"
     imagePullPolicy: {{ .Values.image.pullPolicy }}
-  {{- if or .Values.env .Values.envWithTpl }}
+  {{- if or .Values.env }}
     env:
     {{- with .Values.env }}
       {{- toYaml . | nindent 6 }}
-    {{- end }}
-    {{- range $item := .Values.envWithTpl }}
-      - name: {{ $item.name }}
-        value: {{ tpl $item.value $ | quote }}
-    {{- end }}
+      - name: {{ $item.name $ | quote }}
+        value: {{ $item.value $ | quote }}
+      {{- end }}
   {{- end }}
   {{- if .Values.envFrom }}
     envFrom:
